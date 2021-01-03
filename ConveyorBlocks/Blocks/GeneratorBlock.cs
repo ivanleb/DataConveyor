@@ -1,6 +1,7 @@
-﻿using System;
+﻿using DataConveyor;
+using System;
 
-namespace DataConveyor
+namespace ConveyorBlocks
 {
     public class GeneratorBlock : ProducerConveyorBlock<String>
     {

@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using DataConveyor;
+using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace DataConveyor
+namespace ConveyorBlocks
 {
     public class StringReverserBlock : ConveyorBlock<String, String>
     {

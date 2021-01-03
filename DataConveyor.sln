@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30509.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataConveyor", "DataConveyor\DataConveyor.csproj", "{5BC5F649-2588-46B1-819B-173CDD2C9D5A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataConveyor", "DataConveyor\DataConveyor.csproj", "{5BC5F649-2588-46B1-819B-173CDD2C9D5A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConveyorSample", "ConveyorSample\ConveyorSample.csproj", "{D70E2268-1A18-4BAD-8904-A1C383DEE19C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConveyorSample", "ConveyorSample\ConveyorSample.csproj", "{D70E2268-1A18-4BAD-8904-A1C383DEE19C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConveyorBlocks", "ConveyorBlocks\ConveyorBlocks.csproj", "{804DABBA-8DC3-4BFB-8EA9-2EC5C6E669B3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{D70E2268-1A18-4BAD-8904-A1C383DEE19C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D70E2268-1A18-4BAD-8904-A1C383DEE19C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D70E2268-1A18-4BAD-8904-A1C383DEE19C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{804DABBA-8DC3-4BFB-8EA9-2EC5C6E669B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{804DABBA-8DC3-4BFB-8EA9-2EC5C6E669B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{804DABBA-8DC3-4BFB-8EA9-2EC5C6E669B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{804DABBA-8DC3-4BFB-8EA9-2EC5C6E669B3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
