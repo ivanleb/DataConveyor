@@ -1,7 +1,8 @@
 ﻿namespace DataConveyor
 {
-    public interface IInputConveyorBlock<TInput> : IConnectableBlock<TInput>
+    public interface IInputConveyorBlock<TInput> : IBlock
+        where TInput : class
     {
-        IConnector<TInput> DataSource { get; }
+        void Connect(IConnector<TInput> inputConnector);
     }
 }

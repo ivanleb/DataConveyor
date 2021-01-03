@@ -18,6 +18,7 @@ namespace DataConveyor
         }
 
         public IConveyorBuilder Start<TOutput>(IOutputConveyorBlock<TOutput> block)
+            where TOutput : class
         {
             if (_hasStartBlock)
                 throw new Exception("Conveyor has start block yet");
@@ -29,6 +30,8 @@ namespace DataConveyor
         }
 
         public Boolean TryAdd<TInput, TOutput>(IConveyorBlock<TInput, TOutput> block)
+            where TInput : class
+            where TOutput : class
         {
             if (!_hasStartBlock)
                 throw new Exception("Conveyor has not start block yet");
@@ -37,6 +40,7 @@ namespace DataConveyor
         }
 
         private Boolean AddBlockAtTheEnd<TInput>(IInputConveyorBlock<TInput> block)
+            where TInput : class
         {
             if (_blocks.Last() is IOutputConveyorBlock<TInput> previousBlock)
             {
@@ -49,6 +53,7 @@ namespace DataConveyor
         }
 
         public Conveyor End<TInput>(IInputConveyorBlock<TInput> block)
+            where TInput : class
         {
             if (_hasEndBlock)
                 throw new Exception("Conveyor has end block yet");

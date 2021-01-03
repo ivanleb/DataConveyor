@@ -4,28 +4,21 @@ using System.Threading;
 namespace DataConveyor
 {
     public abstract class ConsumerConveyorBlock<TInput> : IInputConveyorBlock<TInput>
+         where TInput : class
     {
-        private Action<TInput> _dataConsumer;
-
-        public IConnector<TInput> DataSource { get; private set; }
+        private readonly Action<TInput> _dataConsumer;
+        private IConnector<TInput> _dataSource;
+        private WaitHandle _inputPulse;
 
         protected ConsumerConveyorBlock(Action<TInput> dataConsumer)
         {
             _dataConsumer = dataConsumer;
         }
 
-        public AutoResetEvent _inputPulse;
-
         public void Connect(IConnector<TInput> inputBlock)
         {
-            DataSource = inputBlock;
+            _dataSource = inputBlock;
             _inputPulse = inputBlock.Pulse;
-        }
-
-        private void Consume()
-        {
-            TInput data = DataSource.Pull();
-            _dataConsumer.Invoke(data);
         }
 
         public void Run(Object state)
@@ -37,9 +30,16 @@ namespace DataConveyor
             }
         }
 
+        private void Consume()
+        {
+            TInput inputData = _dataSource.Pull();
+            if (inputData != default)
+                _dataConsumer.Invoke(inputData);
+        }
+
         public void Dispose()
         {
-            _inputPulse.Dispose();
+            _dataSource.Dispose();
         }
     }
 }

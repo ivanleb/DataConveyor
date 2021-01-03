@@ -2,6 +2,6 @@
 {
     public interface IConnectionMaker
     {
-        IConnectionMaker Connect<T>(IInputConveyorBlock<T> input, IOutputConveyorBlock<T> output);
+        IConnectionMaker Connect<T>(IInputConveyorBlock<T> input, IOutputConveyorBlock<T> output) where T : class;
     }
 }

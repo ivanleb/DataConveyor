@@ -1,17 +1,21 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Threading;
 
 namespace DataConveyor
 {
     public class Connector<T> : IConnector<T>
+        where T : class
     { 
         private readonly ConcurrentQueue<T> _cache;
-        public AutoResetEvent Pulse { get; }
+        private Boolean _isDisposed;
+
+        public ManualResetEvent Pulse { get; }
 
         public Connector()
         {
             _cache = new ConcurrentQueue<T>();
-            Pulse = new AutoResetEvent(false);
+            Pulse = new ManualResetEvent(false);
         }
 
         public T Pull()
@@ -42,7 +46,10 @@ namespace DataConveyor
 
         public void Dispose()
         {
-            Pulse.Dispose();
+            if(!_isDisposed)
+                Pulse.Dispose();
+
+            _isDisposed = true;
         }
     }
 }

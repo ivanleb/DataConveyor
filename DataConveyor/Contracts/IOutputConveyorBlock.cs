@@ -1,8 +1,8 @@
 ﻿namespace DataConveyor
 {
     public interface IOutputConveyorBlock<TOutput> : IBlock
+        where TOutput : class
     {
-        IConnector<TOutput> DataSink { get; }
-        void Connect(IConnector<TOutput> outputBlock);
+        void Connect(IConnector<TOutput> outputConnector);
     }
 }

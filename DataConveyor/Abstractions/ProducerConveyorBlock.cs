@@ -4,11 +4,12 @@ using System.Threading;
 namespace DataConveyor
 {
     public abstract class ProducerConveyorBlock<TOutput> : IOutputConveyorBlock<TOutput>
+        where TOutput : class
     {
-        private Func<TOutput> _dataGenerator;
-        private TimeSpan _minProduceTime;
-
-        public IConnector<TOutput> DataSink { get; private set; }
+        private readonly Func<TOutput> _dataGenerator;
+        private readonly TimeSpan _minProduceTime;
+        private ManualResetEvent _outputPulse;
+        private IConnector<TOutput> _dataSink;
 
         protected ProducerConveyorBlock(Func<TOutput> dataGenerator, TimeSpan minProduceTime)
         {
@@ -16,32 +17,31 @@ namespace DataConveyor
             _minProduceTime = minProduceTime;
         }
 
-        public AutoResetEvent OutputPulse { get; private set; }
-
         public void Connect(IConnector<TOutput> outputBlock)
         {
-            DataSink = outputBlock;
-            OutputPulse = outputBlock.Pulse;
-        }
-
-        private void Produce()
-        {
-            DataSink.Push(_dataGenerator.Invoke());
+            _dataSink = outputBlock;
+            _outputPulse = outputBlock.Pulse;
         }
 
         public void Run(Object state)
         {
             while (true)
-            {                
+            {
+                _outputPulse.Reset();
                 Produce();
                 Thread.Sleep(_minProduceTime);
-                OutputPulse.Set();
+                _outputPulse.Set();
             }
+        }
+
+        private void Produce()
+        {
+            _dataSink.Push(_dataGenerator.Invoke());
         }
 
         public void Dispose()
         {
-            OutputPulse.Dispose();
+            _dataSink.Dispose();
         }
     }
 }
