@@ -23,8 +23,14 @@ namespace DataConveyor
 
         public void Run(Object state)
         {
+#if DEBUG
+            int i = 0;
+#endif
             while (true)
             {
+#if DEBUG
+                Console.WriteLine("Consumer loop: " + i++);
+#endif
                 _inputPulse.WaitOne();
                 Consume();
             }
@@ -33,6 +39,9 @@ namespace DataConveyor
         private void Consume()
         {
             TInput inputData = _dataSource.Pull();
+#if DEBUG
+            Console.WriteLine("Consume: " + inputData);
+#endif
             if (inputData != default)
                 _dataConsumer.Invoke(inputData);
         }

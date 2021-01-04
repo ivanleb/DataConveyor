@@ -12,7 +12,7 @@ namespace ConveyorBlocks
                 return $"date:{DateTime.Now}";
             };
 
-            return new GeneratorBlock(dataGenerator, TimeSpan.FromSeconds(1));
+            return new GeneratorBlock(dataGenerator, TimeSpan.FromSeconds(10));
         }
 
         private GeneratorBlock(Func<string> dataGenerator, TimeSpan time) : base(dataGenerator, time)

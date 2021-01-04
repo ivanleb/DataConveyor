@@ -1,6 +1,7 @@
 ﻿using ConveyorBlocks;
 using DataConveyor;
 using System;
+using System.Threading;
 
 namespace ConveyorSample
 {
@@ -18,10 +19,7 @@ namespace ConveyorSample
                 var conveyor = builder.End(writer);
                 conveyor.Run();
             }
-            while (true)
-            {
-
-            }
+            Thread.Sleep(TimeSpan.FromMinutes(60));
         }
     }
 }

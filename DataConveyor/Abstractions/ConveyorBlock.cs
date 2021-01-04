@@ -32,10 +32,16 @@ namespace DataConveyor
 
         public void Run(Object state)
         {
+#if DEBUG
+            int i = 0;
+#endif
             while (true)
             {
-                _inputPulse.WaitOne();
+#if DEBUG
+                Console.WriteLine("Handle loop: " + i++);
+#endif
                 _outputPulse.Reset();
+                _inputPulse.WaitOne();
                 DoConveyorStep();
                 _outputPulse.Set();
             }
@@ -44,10 +50,14 @@ namespace DataConveyor
         private void DoConveyorStep()
         {
             TInput inputData = _dataSource.Pull();
-            if(inputData != default)
+#if DEBUG
+            Console.WriteLine("Handle: " + inputData);
+#endif
+            if (inputData != default)
             {
                 TOutput outputData = _dataHandler.Invoke(inputData);
-                _dataSink.Push(outputData);
+                if(outputData != default)
+                    _dataSink.Push(outputData);
             }
         }
 

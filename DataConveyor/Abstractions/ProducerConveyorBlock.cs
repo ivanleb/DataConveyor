@@ -25,8 +25,14 @@ namespace DataConveyor
 
         public void Run(Object state)
         {
+#if DEBUG
+            int i = 0;
+#endif
             while (true)
             {
+#if DEBUG
+                Console.WriteLine("Producer loop: " + i++);
+#endif
                 _outputPulse.Reset();
                 Produce();
                 Thread.Sleep(_minProduceTime);
@@ -36,7 +42,12 @@ namespace DataConveyor
 
         private void Produce()
         {
-            _dataSink.Push(_dataGenerator.Invoke());
+
+            TOutput data = _dataGenerator.Invoke();
+#if DEBUG
+            Console.WriteLine("Produce: " + data );
+#endif
+            _dataSink.Push(data);
         }
 
         public void Dispose()
