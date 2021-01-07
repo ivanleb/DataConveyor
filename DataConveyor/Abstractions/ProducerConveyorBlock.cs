@@ -10,17 +10,21 @@ namespace DataConveyor
         private readonly Func<TOutput> _dataGenerator;
         private IConnector<TOutput> _dataSink;
 
+        IConnector<TOutput> IOutputConveyorBlock<TOutput>.Connector 
+        { 
+            get => _dataSink; 
+            set => _dataSink = value; 
+        }
+
         protected ProducerConveyorBlock(Func<TOutput> dataGenerator, ILog log)
         {
             _dataGenerator = dataGenerator;
             _log = log;
         }
 
-        public IConnector<TOutput> Connect(IConnector<TOutput> outputBlock)
+        public Boolean TryConnect(IInputConveyorBlock<TOutput> inputBlock, ConnectionSpec spec)
         {
-            if(_dataSink == null)
-                _dataSink = outputBlock;
-            return _dataSink;
+            return this.Connect(inputBlock, spec);
         }
 
         public void Run(Object state)

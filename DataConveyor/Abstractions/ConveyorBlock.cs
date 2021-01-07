@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection.Metadata.Ecma335;
 
 namespace DataConveyor
 {
@@ -13,24 +14,32 @@ namespace DataConveyor
         private IConnector<TInput> _dataSource;
         private IConnector<TOutput> _dataSink;
 
+        IConnector<TInput> IInputConveyorBlock<TInput>.Connector 
+        { 
+            get => _dataSource; 
+            set => _dataSource = value; 
+        }
+
+        IConnector<TOutput> IOutputConveyorBlock<TOutput>.Connector
+        {
+            get => _dataSink;
+            set => _dataSink = value;
+        }
+
         public ConveyorBlock(Func<TInput, TOutput> dataHandler, ILog log)
         {
             _dataHandler = dataHandler;
             _log = log;
         }
 
-        public IConnector<TInput> Connect(IConnector<TInput> inputBlock)
+        public Boolean TryConnect(IOutputConveyorBlock<TInput> outputBlock, ConnectionSpec spec)
         {
-            if (_dataSource == null)
-                _dataSource = inputBlock;
-            return _dataSource;
+            return this.Connect(outputBlock, spec);
         }
 
-        public IConnector<TOutput> Connect(IConnector<TOutput> outputBlock)
+        public Boolean TryConnect(IInputConveyorBlock<TOutput> inputBlock, ConnectionSpec spec)
         {
-            if (_dataSink == null)
-                _dataSink = outputBlock;
-            return _dataSink;
+            return this.Connect(inputBlock, spec);
         }
 
         public void Run(Object state)

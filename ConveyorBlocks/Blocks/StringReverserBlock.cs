@@ -1,6 +1,5 @@
 ﻿using DataConveyor;
 using System;
-using System.Linq;
 using System.Threading;
 
 namespace ConveyorBlocks
@@ -17,7 +16,8 @@ namespace ConveyorBlocks
 
             return new StringReverserBlock(handler, logger);
         }
-        private StringReverserBlock(Func<string, string> dataHandler, ILog log) : base(dataHandler, log)
+        private StringReverserBlock(Func<string, string> dataHandler, ILog log) 
+            : base(dataHandler, log)
         {
         }
     }

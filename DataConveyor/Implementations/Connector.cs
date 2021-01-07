@@ -68,18 +68,6 @@ namespace DataConveyor
             }
         }
 
-        public IConnector<T> Connect(IOutputConveyorBlock<T> outputBlock)
-        {
-            _connectorId += $"input - {outputBlock.GetType().Name}; ";
-            return outputBlock.Connect(this);
-        }
-
-        public IConnector<T> Connect(IInputConveyorBlock<T> inputBlock)
-        {            
-            _connectorId += $"output - {inputBlock.GetType().Name}; ";
-            return inputBlock.Connect(this);
-        }
-
         private void CloseOutputOpenInput()
         {
             _outputPulse.Reset();

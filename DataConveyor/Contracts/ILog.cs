@@ -6,4 +6,11 @@ namespace DataConveyor
     {
         void Info(params String[] infos);
     }
+    public class DefaultLog : ILog
+    {
+        public void Info(params string[] infos)
+        {
+            
+        }
+    }
 }

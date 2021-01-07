@@ -1,8 +1,11 @@
-﻿namespace DataConveyor
+﻿using System;
+
+namespace DataConveyor
 {
     public interface IOutputConveyorBlock<TOutput> : IBlock
         where TOutput : class
     {
-        IConnector<TOutput> Connect(IConnector<TOutput> outputConnector);
+        IConnector<TOutput> Connector { get; internal set; }
+        Boolean TryConnect(IInputConveyorBlock<TOutput> inputBlock, ConnectionSpec spec);
     }
 }

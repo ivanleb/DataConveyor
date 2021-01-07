@@ -15,7 +15,8 @@ namespace ConveyorSample
             StringReverserBlock middleHandler1 = StringReverserBlock.Create(logger);
             WriterBlock writer = WriterBlock.Create(logger);
 
-            IConnectionMaker connectionMaker = new ConnectionMaker(logger, defaultCacheLimit: 10);
+            ConnectionSpec spec = new ConnectionSpec(10, logger);
+            IConnectionMaker connectionMaker = new ConnectionMaker(logger, spec);
             IConveyorBuilder builder = new ConveyorBuilder(connectionMaker).Start(generator);
 
             if (builder.TryAdd(middleHandler) && builder.End(writer) && builder.TryInsert(generator, middleHandler1, writer))

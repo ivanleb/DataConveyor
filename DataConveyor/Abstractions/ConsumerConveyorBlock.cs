@@ -9,17 +9,21 @@ namespace DataConveyor
         private readonly Action<TInput> _dataConsumer;
         private IConnector<TInput> _dataSource;
 
+        IConnector<TInput> IInputConveyorBlock<TInput>.Connector 
+        { 
+            get => _dataSource; 
+            set => _dataSource = value; 
+        }
+
         protected ConsumerConveyorBlock(Action<TInput> dataConsumer, ILog log)
         {
             _dataConsumer = dataConsumer;
             _log = log;
         }
 
-        public IConnector<TInput> Connect(IConnector<TInput> inputBlock)
+        public Boolean TryConnect(IOutputConveyorBlock<TInput> outputBlock, ConnectionSpec spec)
         {
-            if(_dataSource == null)
-                _dataSource = inputBlock;
-            return _dataSource;
+            return this.Connect(outputBlock, spec);
         }
 
         public void Run(Object state)
