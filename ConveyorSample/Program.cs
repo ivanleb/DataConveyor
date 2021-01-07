@@ -9,14 +9,18 @@ namespace ConveyorSample
     {
         static void Main(string[] args)
         {
-            GeneratorBlock generator = GeneratorBlock.Create();
-            StringReverserBlock middleHandler = StringReverserBlock.Create();
-            WriterBlock writer = WriterBlock.Create();
+            ILog logger = new ConsoleLogger(onlyDebugLogging: true);
+            GeneratorBlock generator = GeneratorBlock.Create(logger);
+            StringReverserBlock middleHandler = StringReverserBlock.Create(logger);
+            StringReverserBlock middleHandler1 = StringReverserBlock.Create(logger);
+            WriterBlock writer = WriterBlock.Create(logger);
 
-            IConveyorBuilder builder = new ConveyorBuilder().Start(generator);
-            if (builder.TryAdd(middleHandler))
+            IConnectionMaker connectionMaker = new ConnectionMaker(logger, defaultCacheLimit: 10);
+            IConveyorBuilder builder = new ConveyorBuilder(connectionMaker).Start(generator);
+
+            if (builder.TryAdd(middleHandler) && builder.End(writer) && builder.TryInsert(generator, middleHandler1, writer))
             {
-                var conveyor = builder.End(writer);
+                var conveyor = builder.Build();
                 conveyor.Run();
             }
             Thread.Sleep(TimeSpan.FromMinutes(60));

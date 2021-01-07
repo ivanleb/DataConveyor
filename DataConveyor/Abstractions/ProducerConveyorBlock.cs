@@ -6,37 +6,30 @@ namespace DataConveyor
     public abstract class ProducerConveyorBlock<TOutput> : IOutputConveyorBlock<TOutput>
         where TOutput : class
     {
+        private readonly ILog _log;
         private readonly Func<TOutput> _dataGenerator;
-        private readonly TimeSpan _minProduceTime;
-        private ManualResetEvent _outputPulse;
         private IConnector<TOutput> _dataSink;
 
-        protected ProducerConveyorBlock(Func<TOutput> dataGenerator, TimeSpan minProduceTime)
+        protected ProducerConveyorBlock(Func<TOutput> dataGenerator, ILog log)
         {
             _dataGenerator = dataGenerator;
-            _minProduceTime = minProduceTime;
+            _log = log;
         }
 
-        public void Connect(IConnector<TOutput> outputBlock)
+        public IConnector<TOutput> Connect(IConnector<TOutput> outputBlock)
         {
-            _dataSink = outputBlock;
-            _outputPulse = outputBlock.Pulse;
+            if(_dataSink == null)
+                _dataSink = outputBlock;
+            return _dataSink;
         }
 
         public void Run(Object state)
         {
-#if DEBUG
             int i = 0;
-#endif
             while (true)
             {
-#if DEBUG
-                Console.WriteLine("Producer loop: " + i++);
-#endif
-                _outputPulse.Reset();
+                _log.Info("Producer loop: " + i++);
                 Produce();
-                Thread.Sleep(_minProduceTime);
-                _outputPulse.Set();
             }
         }
 
@@ -44,9 +37,7 @@ namespace DataConveyor
         {
 
             TOutput data = _dataGenerator.Invoke();
-#if DEBUG
-            Console.WriteLine("Produce: " + data );
-#endif
+            _log.Info("Produce: " + data );
             _dataSink.Push(data);
         }
 

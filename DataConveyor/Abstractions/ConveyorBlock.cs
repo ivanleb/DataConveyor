@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 
 namespace DataConveyor
 {
@@ -7,56 +6,53 @@ namespace DataConveyor
         where TInput : class
         where TOutput : class
     {
+        private readonly ILog _log;
         private readonly Func<TInput, TOutput> _dataHandler;
-        private ManualResetEvent _inputPulse;
-        private ManualResetEvent _outputPulse;
-        public IConnector<TInput> _dataSource;
-        public IConnector<TOutput> _dataSink;
+        private readonly String _id = Guid.NewGuid().ToString().Substring(0, 5);
 
-        public ConveyorBlock(Func<TInput, TOutput> dataHandler)
+        private IConnector<TInput> _dataSource;
+        private IConnector<TOutput> _dataSink;
+
+        public ConveyorBlock(Func<TInput, TOutput> dataHandler, ILog log)
         {
             _dataHandler = dataHandler;
+            _log = log;
         }
 
-        public void Connect(IConnector<TInput> inputBlock)
+        public IConnector<TInput> Connect(IConnector<TInput> inputBlock)
         {
-            _dataSource = inputBlock;
-            _inputPulse = inputBlock.Pulse;
+            if (_dataSource == null)
+                _dataSource = inputBlock;
+            return _dataSource;
         }
 
-        public void Connect(IConnector<TOutput> outputBlock)
+        public IConnector<TOutput> Connect(IConnector<TOutput> outputBlock)
         {
-            _dataSink = outputBlock;
-            _outputPulse = outputBlock.Pulse;
+            if (_dataSink == null)
+                _dataSink = outputBlock;
+            return _dataSink;
         }
 
         public void Run(Object state)
         {
-#if DEBUG
             int i = 0;
-#endif
+
             while (true)
             {
-#if DEBUG
-                Console.WriteLine("Handle loop: " + i++);
-#endif
-                _outputPulse.Reset();
-                _inputPulse.WaitOne();
+                _log.Info($" {_id} Handle loop: " + i++);
+
                 DoConveyorStep();
-                _outputPulse.Set();
             }
         }
 
         private void DoConveyorStep()
         {
             TInput inputData = _dataSource.Pull();
-#if DEBUG
-            Console.WriteLine("Handle: " + inputData);
-#endif
+            _log.Info($" {_id} Handle: " + inputData);
             if (inputData != default)
             {
                 TOutput outputData = _dataHandler.Invoke(inputData);
-                if(outputData != default)
+                if (outputData != default)
                     _dataSink.Push(outputData);
             }
         }

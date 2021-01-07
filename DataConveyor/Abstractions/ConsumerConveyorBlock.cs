@@ -1,37 +1,33 @@
 ﻿using System;
-using System.Threading;
 
 namespace DataConveyor
 {
     public abstract class ConsumerConveyorBlock<TInput> : IInputConveyorBlock<TInput>
          where TInput : class
     {
+        private readonly ILog _log;
         private readonly Action<TInput> _dataConsumer;
         private IConnector<TInput> _dataSource;
-        private WaitHandle _inputPulse;
 
-        protected ConsumerConveyorBlock(Action<TInput> dataConsumer)
+        protected ConsumerConveyorBlock(Action<TInput> dataConsumer, ILog log)
         {
             _dataConsumer = dataConsumer;
+            _log = log;
         }
 
-        public void Connect(IConnector<TInput> inputBlock)
+        public IConnector<TInput> Connect(IConnector<TInput> inputBlock)
         {
-            _dataSource = inputBlock;
-            _inputPulse = inputBlock.Pulse;
+            if(_dataSource == null)
+                _dataSource = inputBlock;
+            return _dataSource;
         }
 
         public void Run(Object state)
         {
-#if DEBUG
             int i = 0;
-#endif
             while (true)
             {
-#if DEBUG
-                Console.WriteLine("Consumer loop: " + i++);
-#endif
-                _inputPulse.WaitOne();
+                _log.Info("Consumer loop: " + i++);
                 Consume();
             }
         }
@@ -39,9 +35,9 @@ namespace DataConveyor
         private void Consume()
         {
             TInput inputData = _dataSource.Pull();
-#if DEBUG
-            Console.WriteLine("Consume: " + inputData);
-#endif
+
+            _log.Info("Consume: " + inputData);
+
             if (inputData != default)
                 _dataConsumer.Invoke(inputData);
         }

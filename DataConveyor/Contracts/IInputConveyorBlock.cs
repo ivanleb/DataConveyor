@@ -3,6 +3,6 @@
     public interface IInputConveyorBlock<TInput> : IBlock
         where TInput : class
     {
-        void Connect(IConnector<TInput> inputConnector);
+        IConnector<TInput> Connect(IConnector<TInput> inputConnector);
     }
 }

@@ -5,17 +5,18 @@ namespace ConveyorBlocks
 {
     public class GeneratorBlock : ProducerConveyorBlock<String>
     {
-        public static GeneratorBlock Create() 
+        private static Int32 counter;
+        public static GeneratorBlock Create(ILog logger) 
         {
             Func<string> dataGenerator = () => 
             {
-                return $"date:{DateTime.Now}";
+                return counter++.ToString();
             };
 
-            return new GeneratorBlock(dataGenerator, TimeSpan.FromSeconds(10));
+            return new GeneratorBlock(dataGenerator, logger);
         }
 
-        private GeneratorBlock(Func<string> dataGenerator, TimeSpan time) : base(dataGenerator, time)
+        private GeneratorBlock(Func<string> dataGenerator, ILog logger) : base(dataGenerator, logger)
         {
         }
     }

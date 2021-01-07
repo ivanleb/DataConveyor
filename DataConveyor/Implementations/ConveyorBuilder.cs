@@ -12,9 +12,9 @@ namespace DataConveyor
         private LinkedList<IBlock> _blocks = new LinkedList<IBlock>();
         private IConnectionMaker _connectionMaker;
 
-        public ConveyorBuilder()
+        public ConveyorBuilder(IConnectionMaker connectionMaker)
         {
-            _connectionMaker = new ConnectionMaker();
+            _connectionMaker = connectionMaker;
         }
 
         public IConveyorBuilder Start<TOutput>(IOutputConveyorBlock<TOutput> block)
@@ -36,15 +36,36 @@ namespace DataConveyor
             if (!_hasStartBlock)
                 throw new Exception("Conveyor has not start block yet");
 
-            return AddBlockAtTheEnd(block);
+            return TryAddBlockAtTheEnd(block);
         }
 
-        private Boolean AddBlockAtTheEnd<TInput>(IInputConveyorBlock<TInput> block)
+        public Boolean TryInsert<TInput, TOutput>(IOutputConveyorBlock<TInput> blockBefore, IConveyorBlock<TInput, TOutput> insertingBlock, IInputConveyorBlock<TOutput> blockAfter)
+            where TInput : class
+            where TOutput : class
+        {
+            bool blockBeforeExists = false;
+            bool blockAfterExists = false;
+            var block = _blocks.First;
+            while (block != null)
+            {
+                if (block.Value == blockBefore) blockBeforeExists = true;
+                if (block.Value == blockAfter) blockAfterExists = true;
+                if (blockAfterExists && blockBeforeExists) break;
+                block = block.Next;
+            }
+            if (!(blockAfterExists && blockBeforeExists)) return false;
+            _connectionMaker.Connect(blockBefore, insertingBlock)
+                            .Connect(insertingBlock, blockAfter);
+            _blocks.AddLast(insertingBlock);
+            return true;
+        }
+
+        private Boolean TryAddBlockAtTheEnd<TInput>(IInputConveyorBlock<TInput> block)
             where TInput : class
         {
             if (_blocks.Last() is IOutputConveyorBlock<TInput> previousBlock)
             {
-                _connectionMaker.Connect(block, previousBlock);
+                _connectionMaker.Connect(previousBlock, block);
                 _blocks.AddLast(block);
                 return true;
             }
@@ -52,7 +73,7 @@ namespace DataConveyor
             return false;
         }
 
-        public Conveyor End<TInput>(IInputConveyorBlock<TInput> block)
+        public Boolean End<TInput>(IInputConveyorBlock<TInput> block)
             where TInput : class
         {
             if (_hasEndBlock)
@@ -60,8 +81,17 @@ namespace DataConveyor
             if (_blocks.Count < 2)
                 throw new Exception("Conveyor cannot be so short");
 
-            _hasEndBlock = AddBlockAtTheEnd(block);
-            return new Conveyor(_blocks.ToList());
+            _hasEndBlock = TryAddBlockAtTheEnd(block);
+            return _hasEndBlock;
+
+        }
+
+        public Conveyor Build() 
+        {
+            if (_hasEndBlock)
+                return new Conveyor(_blocks.ToList());
+            else
+                throw new Exception("Conveyor has not end block");
         }
     }
 }

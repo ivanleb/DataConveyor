@@ -1,17 +1,23 @@
 ﻿using DataConveyor;
 using System;
 using System.Linq;
+using System.Threading;
 
 namespace ConveyorBlocks
 {
     public class StringReverserBlock : ConveyorBlock<String, String>
     {
-        public static StringReverserBlock Create() 
+        public static StringReverserBlock Create(ILog logger) 
         {
-            Func<String, String> handler = (source) => new String(source.Reverse().ToArray());
-            return new StringReverserBlock(handler);
+            Func<String, String> handler = (source) => 
+            { 
+                Thread.Sleep(TimeSpan.FromSeconds(5));
+                return source;// new String(source.Reverse().ToArray()); 
+            };
+
+            return new StringReverserBlock(handler, logger);
         }
-        private StringReverserBlock(Func<string, string> dataHandler) : base(dataHandler)
+        private StringReverserBlock(Func<string, string> dataHandler, ILog log) : base(dataHandler, log)
         {
         }
     }
