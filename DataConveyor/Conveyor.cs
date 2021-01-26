@@ -1,29 +1,38 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
 namespace DataConveyor
 {
-    public class Conveyor
+    public class Conveyor : IDisposable
     {
-        private List<IBlock> _blocks;
+        private Dictionary<Guid, IBlock> _blocks;
 
         public Conveyor(params IBlock[] blocks)
         {
-            _blocks = blocks.ToList();
+            _blocks = blocks.ToDictionary(item => item.Id);
         }
 
         public Conveyor Add(IBlock block) 
         {
-            _blocks.Add(block);
+            _blocks.TryAdd(block.Id, block);
             return this;
         }
 
         public void Run()
         {
-            foreach (var block in _blocks)
+            foreach (var block in _blocks.Values)
             {
                 ThreadPool.QueueUserWorkItem(block.Run);
+            }
+        }
+
+        public void Dispose()
+        {
+            foreach (var block in _blocks.Values)
+            {
+                block.Dispose();
             }
         }
     }

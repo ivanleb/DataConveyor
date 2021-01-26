@@ -6,7 +6,7 @@ namespace ConveyorBlocks
 {
     public class StringReverserBlock : ConveyorBlock<String, String>
     {
-        public static StringReverserBlock Create(ILog logger) 
+        public static StringReverserBlock Create() 
         {
             Func<String, String> handler = (source) => 
             { 
@@ -14,10 +14,10 @@ namespace ConveyorBlocks
                 return source;// new String(source.Reverse().ToArray()); 
             };
 
-            return new StringReverserBlock(handler, logger);
+            return new StringReverserBlock(handler);
         }
-        private StringReverserBlock(Func<string, string> dataHandler, ILog log) 
-            : base(dataHandler, log)
+        private StringReverserBlock(Func<string, string> dataHandler) 
+            : base(dataHandler)
         {
         }
     }

@@ -5,7 +5,6 @@ namespace DataConveyor
     public abstract class ConsumerConveyorBlock<TInput> : IInputConveyorBlock<TInput>
          where TInput : class
     {
-        private readonly ILog _log;
         private readonly Action<TInput> _dataConsumer;
         private IConnector<TInput> _dataSource;
 
@@ -15,27 +14,23 @@ namespace DataConveyor
             set => _dataSource = value; 
         }
 
-        protected ConsumerConveyorBlock(Action<TInput> dataConsumer, ILog log)
+        public Guid Id { get; }
+
+        protected ConsumerConveyorBlock(Action<TInput> dataConsumer)
         {
             _dataConsumer = dataConsumer;
-            _log = log;
+            Id = Guid.NewGuid();
         }
 
         public void Run(Object state)
         {
-            int i = 0;
             while (true)
-            {
-                _log.Info("Consumer loop: " + i++);
                 Consume();
-            }
         }
 
         private void Consume()
         {
             TInput inputData = _dataSource.Pull();
-
-            _log.Info("Consume: " + inputData);
 
             if (inputData != default)
                 _dataConsumer.Invoke(inputData);

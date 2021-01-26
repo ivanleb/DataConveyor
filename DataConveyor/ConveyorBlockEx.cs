@@ -9,7 +9,7 @@ namespace DataConveyor
         {
             if (inputBlock.Connector == null && outputBlock.Connector == null)
             {
-                inputBlock.Connector = new Connector<TInput>(spec.MaxBufferSize, spec.Log);
+                inputBlock.Connector = new Connector<TInput>(spec.MaxBufferSize);
 
                 return outputBlock.Connect(inputBlock, spec);
             }
@@ -33,7 +33,7 @@ namespace DataConveyor
         {
             if (outputBlock.Connector == null && inputBlock.Connector == null)
             {
-                outputBlock.Connector = new Connector<TOutput>(spec.MaxBufferSize, spec.Log);
+                outputBlock.Connector = new Connector<TOutput>(spec.MaxBufferSize);
 
                 return inputBlock.Connect(outputBlock, spec);
             }

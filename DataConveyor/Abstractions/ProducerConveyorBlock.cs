@@ -6,7 +6,6 @@ namespace DataConveyor
     public abstract class ProducerConveyorBlock<TOutput> : IOutputConveyorBlock<TOutput>
         where TOutput : class
     {
-        private readonly ILog _log;
         private readonly Func<TOutput> _dataGenerator;
         private IConnector<TOutput> _dataSink;
 
@@ -16,18 +15,18 @@ namespace DataConveyor
             set => _dataSink = value; 
         }
 
-        protected ProducerConveyorBlock(Func<TOutput> dataGenerator, ILog log)
+        public Guid Id { get; }
+
+        protected ProducerConveyorBlock(Func<TOutput> dataGenerator)
         {
             _dataGenerator = dataGenerator;
-            _log = log;
+            Id = Guid.NewGuid();
         }
 
         public void Run(Object state)
         {
-            int i = 0;
             while (true)
             {
-                _log.Info("Producer loop: " + i++);
                 Produce();
             }
         }
@@ -36,7 +35,6 @@ namespace DataConveyor
         {
 
             TOutput data = _dataGenerator.Invoke();
-            _log.Info("Produce: " + data );
             _dataSink.Push(data);
         }
 
