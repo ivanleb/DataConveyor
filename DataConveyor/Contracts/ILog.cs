@@ -2,7 +2,7 @@
 
 namespace DataConveyor
 {
-    public interface ILog
+    public interface ILog : IDisposable
     {
         void Info(params String[] infos);
     }
@@ -10,7 +10,13 @@ namespace DataConveyor
     {
         public void Info(params string[] infos)
         {
-            
+
         }
+
+        public void Dispose()
+        {
+
+        }
+
     }
 }

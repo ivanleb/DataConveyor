@@ -10,7 +10,7 @@ namespace DataConveyor
             Log = log;
         }
 
-        public ConnectionSpec() { }
+        private ConnectionSpec() { }
 
         public Int32 MaxBufferSize { get; private set; }
         public ILog Log { get; private set; }

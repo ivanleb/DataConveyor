@@ -5,6 +5,6 @@
         where TInput : class
         where TOutput : class
     {
-    
+
     }
 }

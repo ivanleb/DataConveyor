@@ -32,16 +32,6 @@ namespace DataConveyor
             _log = log;
         }
 
-        public Boolean TryConnect(IOutputConveyorBlock<TInput> outputBlock, ConnectionSpec spec)
-        {
-            return this.Connect(outputBlock, spec);
-        }
-
-        public Boolean TryConnect(IInputConveyorBlock<TOutput> inputBlock, ConnectionSpec spec)
-        {
-            return this.Connect(inputBlock, spec);
-        }
-
         public void Run(Object state)
         {
             int i = 0;

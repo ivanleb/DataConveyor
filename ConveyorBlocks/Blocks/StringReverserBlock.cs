@@ -10,7 +10,7 @@ namespace ConveyorBlocks
         {
             Func<String, String> handler = (source) => 
             { 
-                Thread.Sleep(TimeSpan.FromSeconds(5));
+                Thread.Sleep(TimeSpan.FromSeconds(1));
                 return source;// new String(source.Reverse().ToArray()); 
             };
 

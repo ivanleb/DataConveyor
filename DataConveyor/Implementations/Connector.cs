@@ -7,29 +7,36 @@ namespace DataConveyor
     public class Connector<T> : IConnector<T>
         where T : class
     {
-        private readonly ILog _log;
+        private readonly ILog _log = new DefaultLog();
         private readonly ConcurrentQueue<T> _cache;
         private readonly Int32 _maxCacheElements = 1;
 
-        private  String _connectorId = Guid.NewGuid().ToString().Substring(0, 5) + " Connector: ";
+        private String _connectorId = Guid.NewGuid().ToString().Substring(0, 5) + " Connector: ";
         private Boolean _isDisposed;
-        private ManualResetEvent _inputPulse { get; }
-        private ManualResetEvent _outputPulse { get; }
+        private ManualResetEventSlim _inputPulse;
+        private ManualResetEventSlim _outputPulse;
 
         public Connector(int maxCacheElements, ILog log)
         {
             _cache = new ConcurrentQueue<T>();
-            _inputPulse = new ManualResetEvent(true);
-            _outputPulse = new ManualResetEvent(true);
+            _inputPulse = new ManualResetEventSlim(true);
+            _outputPulse = new ManualResetEventSlim(true);
             _maxCacheElements = maxCacheElements;
             _log = log;
+        }
+
+        public Connector() 
+        {
+            _cache = new ConcurrentQueue<T>();
+            _inputPulse = new ManualResetEventSlim(true);
+            _outputPulse = new ManualResetEventSlim(true);
         }
 
         public T Pull()
         {
             _log.Info($"{_connectorId} pull, before OutputPulse.WaitOne");
 
-            _outputPulse.WaitOne();
+            _outputPulse.Wait();
 
             T item;
             if (_cache.TryDequeue(out item))
@@ -52,7 +59,7 @@ namespace DataConveyor
         {
             _log.Info($"{_connectorId} push, before InputPulse.WaitOne");
 
-            _inputPulse.WaitOne();
+            _inputPulse.Wait();
 
             _log.Info($"{_connectorId} push, after InputPulse.WaitOne");
 

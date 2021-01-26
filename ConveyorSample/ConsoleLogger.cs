@@ -31,5 +31,10 @@ namespace ConveyorSample
                 Console.WriteLine($"[{DateTime.Now}] {info[i]}");
             }
         }
+
+        public void Dispose()
+        {
+            
+        }
     }
 }
