@@ -4,7 +4,7 @@ namespace DataConveyor
 {
     public static class ConveyorBlockEx
     {
-        public static Boolean Connect<TInput>(this IInputConveyorBlock<TInput> inputBlock, IOutputConveyorBlock<TInput> outputBlock, ConnectionSpec spec)
+        internal static Boolean Connect<TInput>(this IInputConveyorBlock<TInput> inputBlock, IOutputConveyorBlock<TInput> outputBlock, ConnectionSpec spec)
             where TInput : class
         {
             if (inputBlock.Connector == null && outputBlock.Connector == null)
@@ -28,7 +28,7 @@ namespace DataConveyor
             return (inputBlock.Connector == outputBlock.Connector);
         }
 
-        public static Boolean Connect<TOutput>(this IOutputConveyorBlock<TOutput> outputBlock, IInputConveyorBlock<TOutput> inputBlock, ConnectionSpec spec)
+        internal static Boolean Connect<TOutput>(this IOutputConveyorBlock<TOutput> outputBlock, IInputConveyorBlock<TOutput> inputBlock, ConnectionSpec spec)
             where TOutput : class
         {
             if (outputBlock.Connector == null && inputBlock.Connector == null)
@@ -52,33 +52,32 @@ namespace DataConveyor
             return (outputBlock.Connector == inputBlock.Connector);
         }
 
+        public static (IConveyorBlock<TInput, TOutput> Block, Boolean Success, Conveyor Conveyor) Connect<TInput, TOutput>(this (IOutputConveyorBlock<TInput> Block, Boolean PreviousSuccess, Conveyor Conveyor) firstBlock, IConveyorBlock<TInput, TOutput> secondBlock, ConnectionSpec spec)
+            where TInput : class
+            where TOutput : class
+        {
+            firstBlock.Conveyor.Add(firstBlock.Block);
+            Boolean success = firstBlock.Block.Connect(secondBlock, spec);
+
+            if (success)
+                firstBlock.Conveyor.Add(secondBlock);
+
+            return (secondBlock, success, firstBlock.Conveyor);
+        }
+
         public static (IConveyorBlock<TMiddle, TOutput> Block, Boolean Success, Conveyor Conveyor) Connect<TInput, TMiddle, TOutput>(this (IConveyorBlock<TInput, TMiddle> Block, Boolean PreviousSuccess, Conveyor Conveyor) firstBlock, IConveyorBlock<TMiddle, TOutput> secondBlock, ConnectionSpec spec)
                     where TInput : class
                     where TMiddle : class
                     where TOutput : class
         {
-            Boolean success = firstBlock.PreviousSuccess 
-                ? firstBlock.Block.Connect(secondBlock, spec) 
+            Boolean success = firstBlock.PreviousSuccess
+                ? firstBlock.Block.Connect(secondBlock, spec)
                 : firstBlock.PreviousSuccess;
 
             if (success)
                 firstBlock.Conveyor.Add(secondBlock);
 
             return (secondBlock, success, firstBlock.Conveyor);
-
-        }
-
-        public static (IConveyorBlock<TInput, TOutput> Block, Boolean Success, Conveyor Conveyor) Connect<TInput, TOutput>(this IOutputConveyorBlock<TInput> firstBlock, IConveyorBlock<TInput, TOutput> secondBlock, ConnectionSpec spec, Conveyor conveyor)
-            where TInput : class
-            where TOutput : class
-        {
-            conveyor.Add(firstBlock);
-            Boolean success = firstBlock.Connect(secondBlock, spec);
-
-            if (success)
-                conveyor.Add(secondBlock);
-
-            return (secondBlock, success, conveyor);
         }
 
         public static (IInputConveyorBlock<TOutput> Block, Boolean Success, Conveyor Conveyor) Connect<TInput, TOutput>(this (IConveyorBlock<TInput, TOutput> Block, Boolean PreviousSuccess, Conveyor Conveyor) firstBlock, IInputConveyorBlock<TOutput> secondBlock, ConnectionSpec spec)
@@ -93,6 +92,12 @@ namespace DataConveyor
                 firstBlock.Conveyor.Add(secondBlock);
 
             return (secondBlock, success, firstBlock.Conveyor);
+        }
+
+        public static (IOutputConveyorBlock<TInput> Block, Boolean PreviousSuccess, Conveyor Conveyor) CreateConveyor<TInput>(this IOutputConveyorBlock<TInput> startBlock, ConnectionSpec spec)
+            where TInput : class
+        {
+            return (startBlock, true, new Conveyor());
         }
 
         public static Conveyor Run<TOutput>(this (IInputConveyorBlock<TOutput> Block, Boolean Success, Conveyor Conveyor) endBlock)

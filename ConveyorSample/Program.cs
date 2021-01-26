@@ -13,7 +13,8 @@ namespace ConveyorSample
 
             Conveyor conveyor =
                 GeneratorBlock.Create()
-                .Connect(StringReverserBlock.Create(), spec, new Conveyor())
+                .CreateConveyor(spec)
+                .Connect(StringReverserBlock.Create(), spec)
                 .Connect(StringReverserBlock.Create(), spec)
                 .Connect(StringReverserBlock.Create(), spec)
                 .Connect(WriterBlock.Create(), spec)
