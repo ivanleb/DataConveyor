@@ -6,7 +6,10 @@ namespace DataConveyor
     public abstract class ProducerConveyorBlock<TOutput> : IOutputConveyorBlock<TOutput>
         where TOutput : class
     {
-        private readonly Func<TOutput> _dataGenerator;
+        private readonly Func<TOutput> _dataGenerator; 
+        private CancellationTokenSource _cts;
+        private ManualResetEvent _pauseEvent;
+        private Boolean _isPaused;
         private IConnector<TOutput> _dataSink;
 
         IConnector<TOutput> IOutputConveyorBlock<TOutput>.Connector 
@@ -21,12 +24,22 @@ namespace DataConveyor
         {
             _dataGenerator = dataGenerator;
             Id = Guid.NewGuid();
+            _cts = new CancellationTokenSource();
+            _pauseEvent = new ManualResetEvent(true);
         }
 
         public void Run(Object state)
         {
-            while (true)
+            if (_isPaused)
             {
+                _pauseEvent.Set();
+                _isPaused = false;
+                return;
+            }
+
+            while (!_cts.Token.IsCancellationRequested)
+            {
+                _pauseEvent.WaitOne();
                 Produce();
             }
         }
@@ -38,9 +51,22 @@ namespace DataConveyor
             _dataSink.Push(data);
         }
 
+        public void Stop()
+        {
+            _cts.Cancel();
+        }
+
+        public void Pause()
+        {
+            _pauseEvent.Reset();
+            _isPaused = true;
+        }
+
         public void Dispose()
         {
             _dataSink.Dispose();
+            _cts.Dispose();
+            _pauseEvent.Dispose();
         }
     }
 }

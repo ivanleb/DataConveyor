@@ -20,7 +20,21 @@ namespace ConveyorSample
                 .Connect(WriterBlock.Create(), spec)
                 .Run();
 
-            Thread.Sleep(TimeSpan.FromMinutes(60));
+
+            new Thread(()=> 
+            {
+                while (true)
+                {
+                    var keyInfo = Console.ReadKey();
+                    if (keyInfo.KeyChar == 'p')
+                        conveyor.PauseResume();
+                    else if (keyInfo.KeyChar == 's')
+                    {
+                        conveyor.Stop();
+                        break;
+                    }
+                }
+            }).Start();
 
         }
     }

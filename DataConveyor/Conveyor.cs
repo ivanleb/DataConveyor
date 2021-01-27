@@ -8,6 +8,7 @@ namespace DataConveyor
     public class Conveyor : IDisposable
     {
         private Dictionary<Guid, IBlock> _blocks;
+        private Boolean _isPaused;
 
         public Conveyor(params IBlock[] blocks)
         {
@@ -25,6 +26,44 @@ namespace DataConveyor
             foreach (var block in _blocks.Values)
             {
                 ThreadPool.QueueUserWorkItem(block.Run);
+            }
+        }
+
+        public void PauseResume() 
+        {
+            if (_isPaused)
+            {
+                Resume();
+                _isPaused = false;
+            }
+            else
+            {
+                Pause();
+                _isPaused = true;
+            }
+        }
+
+        private void Pause() 
+        {
+            foreach (var block in _blocks.Values)
+            {
+                block.Pause();
+            }
+        }
+
+        private  void Resume()
+        {
+            foreach (var block in _blocks.Values)
+            {
+                block.Run(block);
+            }
+        }
+
+        public void Stop() 
+        {
+            foreach (var block in _blocks.Values)
+            {
+                block.Stop();
             }
         }
 

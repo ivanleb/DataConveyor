@@ -6,5 +6,7 @@ namespace DataConveyor
     {
         Guid Id { get; }
         void Run(Object state);
+        void Stop();
+        void Pause();
     }
 }

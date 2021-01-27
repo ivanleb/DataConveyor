@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Reflection.Metadata.Ecma335;
+using System.Threading;
 
 namespace DataConveyor
 {
@@ -8,7 +8,9 @@ namespace DataConveyor
         where TOutput : class
     {
         private readonly Func<TInput, TOutput> _dataHandler;
-        private readonly String _id = Guid.NewGuid().ToString().Substring(0, 5);
+        private CancellationTokenSource _cts;
+        private ManualResetEvent _pauseEvent;
+        private Boolean _isPaused;
 
         private IConnector<TInput> _dataSource;
         private IConnector<TOutput> _dataSink;
@@ -31,12 +33,22 @@ namespace DataConveyor
         {
             _dataHandler = dataHandler;
             Id = Guid.NewGuid();
+            _cts = new CancellationTokenSource();
+            _pauseEvent = new ManualResetEvent(true);
         }
 
         public void Run(Object state)
         {
-            while (true)
+            if (_isPaused)
             {
+                _pauseEvent.Set();
+                _isPaused = false;
+                return;
+            }
+
+            while (!_cts.Token.IsCancellationRequested)
+            {
+                _pauseEvent.WaitOne();
                 DoConveyorStep();
             }
         }
@@ -52,10 +64,23 @@ namespace DataConveyor
             }
         }
 
+        public void Stop()
+        {
+            _cts.Cancel();
+        }
+
+        public void Pause()
+        {
+            _pauseEvent.Reset();
+            _isPaused = true;
+        }
+
         public void Dispose()
         {
             _dataSource.Dispose();
             _dataSink.Dispose();
+            _cts.Dispose();
+            _pauseEvent.Dispose();
         }
     }
 }
