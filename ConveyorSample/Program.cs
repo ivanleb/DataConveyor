@@ -11,14 +11,18 @@ namespace ConveyorSample
         {
             ConnectionSpec spec = new ConnectionSpec(10);
 
-            Conveyor conveyor =
-                GeneratorBlock.Create()
-                .CreateConveyor(spec)
-                .Connect(StringReverserBlock.Create(), spec)
-                .Connect(StringReverserBlock.Create(), spec)
-                .Connect(StringReverserBlock.Create(), spec)
-                .Connect(WriterBlock.Create(), spec)
-                .Run();
+
+            var chain1 = LineReaderBlock.Create(@"C:\Users\il\Desktop\vim\VimService.cs")
+            .CreateConveyor(spec)
+            //.Connect(StringReverserBlock.Create(), spec)
+            //.Connect(StringReverserBlock.Create(), spec)
+            .Connect(StringReverserBlock.Create(), spec);
+
+            //var chain3 = chain1.Connect(WriterBlock.Create(), spec);
+
+            var chain3 = chain1.Connect(LineWriterBlock.Create(@"C:\Users\il\Desktop\vim\VimService_reversed.cs"), spec);
+
+            Conveyor conveyor = chain3.Run();
 
 
             new Thread(()=> 

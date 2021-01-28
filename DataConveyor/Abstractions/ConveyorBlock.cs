@@ -4,8 +4,6 @@ using System.Threading;
 namespace DataConveyor
 {
     public abstract class ConveyorBlock<TInput, TOutput> : IConveyorBlock<TInput, TOutput>
-        where TInput : class
-        where TOutput : class
     {
         private readonly Func<TInput, TOutput> _dataHandler;
         private CancellationTokenSource _cts;
@@ -56,12 +54,8 @@ namespace DataConveyor
         private void DoConveyorStep()
         {
             TInput inputData = _dataSource.Pull();
-            if (inputData != default)
-            {
-                TOutput outputData = _dataHandler.Invoke(inputData);
-                if (outputData != default)
-                    _dataSink.Push(outputData);
-            }
+            TOutput outputData = _dataHandler.Invoke(inputData);
+            _dataSink.Push(outputData);
         }
 
         public void Stop()

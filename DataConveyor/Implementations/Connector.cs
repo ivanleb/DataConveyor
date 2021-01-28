@@ -5,7 +5,6 @@ using System.Threading;
 namespace DataConveyor
 {
     public class Connector<T> : IConnector<T>
-        where T : class
     {
         private readonly ConcurrentQueue<T> _cache;
         private readonly Int32 _maxCacheElements = 1;

@@ -1,5 +1,6 @@
 ﻿using DataConveyor;
 using System;
+using System.Linq;
 using System.Threading;
 
 namespace ConveyorBlocks
@@ -10,8 +11,8 @@ namespace ConveyorBlocks
         {
             Func<String, String> handler = (source) => 
             { 
-                Thread.Sleep(TimeSpan.FromSeconds(1));
-                return source;// new String(source.Reverse().ToArray()); 
+                //Thread.Sleep(TimeSpan.FromSeconds(1));
+                return new String(source.Reverse().ToArray()); 
             };
 
             return new StringReverserBlock(handler);

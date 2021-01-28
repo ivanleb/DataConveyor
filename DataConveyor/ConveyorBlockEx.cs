@@ -5,7 +5,6 @@ namespace DataConveyor
     public static class ConveyorBlockEx
     {
         internal static Boolean Connect<TInput>(this IInputConveyorBlock<TInput> inputBlock, IOutputConveyorBlock<TInput> outputBlock, ConnectionSpec spec)
-            where TInput : class
         {
             if (inputBlock.Connector == null && outputBlock.Connector == null)
             {
@@ -29,7 +28,6 @@ namespace DataConveyor
         }
 
         internal static Boolean Connect<TOutput>(this IOutputConveyorBlock<TOutput> outputBlock, IInputConveyorBlock<TOutput> inputBlock, ConnectionSpec spec)
-            where TOutput : class
         {
             if (outputBlock.Connector == null && inputBlock.Connector == null)
             {
@@ -53,8 +51,6 @@ namespace DataConveyor
         }
 
         public static (IConveyorBlock<TInput, TOutput> Block, Boolean Success, Conveyor Conveyor) Connect<TInput, TOutput>(this (IOutputConveyorBlock<TInput> Block, Boolean PreviousSuccess, Conveyor Conveyor) firstBlock, IConveyorBlock<TInput, TOutput> secondBlock, ConnectionSpec spec)
-            where TInput : class
-            where TOutput : class
         {
             firstBlock.Conveyor.Add(firstBlock.Block);
             Boolean success = firstBlock.Block.Connect(secondBlock, spec);
@@ -81,8 +77,6 @@ namespace DataConveyor
         }
 
         public static (IInputConveyorBlock<TOutput> Block, Boolean Success, Conveyor Conveyor) Connect<TInput, TOutput>(this (IConveyorBlock<TInput, TOutput> Block, Boolean PreviousSuccess, Conveyor Conveyor) firstBlock, IInputConveyorBlock<TOutput> secondBlock, ConnectionSpec spec)
-            where TInput : class
-            where TOutput : class
         {
             Boolean success = firstBlock.PreviousSuccess
                 ? firstBlock.Block.Connect(secondBlock, spec)
@@ -95,13 +89,11 @@ namespace DataConveyor
         }
 
         public static (IOutputConveyorBlock<TInput> Block, Boolean PreviousSuccess, Conveyor Conveyor) CreateConveyor<TInput>(this IOutputConveyorBlock<TInput> startBlock, ConnectionSpec spec)
-            where TInput : class
         {
             return (startBlock, true, new Conveyor());
         }
 
         public static Conveyor Run<TOutput>(this (IInputConveyorBlock<TOutput> Block, Boolean Success, Conveyor Conveyor) endBlock)
-            where TOutput : class
         {
             endBlock.Conveyor.Run();
             return endBlock.Conveyor;

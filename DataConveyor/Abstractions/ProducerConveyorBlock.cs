@@ -4,7 +4,6 @@ using System.Threading;
 namespace DataConveyor
 {
     public abstract class ProducerConveyorBlock<TOutput> : IOutputConveyorBlock<TOutput>
-        where TOutput : class
     {
         private readonly Func<TOutput> _dataGenerator; 
         private CancellationTokenSource _cts;
@@ -46,7 +45,6 @@ namespace DataConveyor
 
         private void Produce()
         {
-
             TOutput data = _dataGenerator.Invoke();
             _dataSink.Push(data);
         }

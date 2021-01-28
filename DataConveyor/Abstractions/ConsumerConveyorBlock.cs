@@ -4,7 +4,6 @@ using System.Threading;
 namespace DataConveyor
 {
     public abstract class ConsumerConveyorBlock<TInput> : IInputConveyorBlock<TInput>
-         where TInput : class
     {
         private readonly Action<TInput> _dataConsumer; 
         private CancellationTokenSource _cts;
@@ -47,9 +46,7 @@ namespace DataConveyor
         private void Consume()
         {
             TInput inputData = _dataSource.Pull();
-
-            if (inputData != default)
-                _dataConsumer.Invoke(inputData);
+            _dataConsumer.Invoke(inputData);
         }
 
         public void Stop()
