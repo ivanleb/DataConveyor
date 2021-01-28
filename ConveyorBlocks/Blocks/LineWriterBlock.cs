@@ -12,7 +12,7 @@ namespace ConveyorBlocks
             StreamWriter stream = new StreamWriter(File.OpenWrite(filePath));
             Action<string> dataConsumer = s => 
             {
-                stream.WriteLine();
+                stream.WriteLine(s);
             };
             return new LineWriterBlock(stream, dataConsumer);
         }

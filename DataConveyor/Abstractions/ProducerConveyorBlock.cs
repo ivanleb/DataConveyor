@@ -5,7 +5,7 @@ namespace DataConveyor
 {
     public abstract class ProducerConveyorBlock<TOutput> : IOutputConveyorBlock<TOutput>
     {
-        private readonly Func<TOutput> _dataGenerator; 
+        private readonly Func<(TOutput Data, Boolean IsStopped)> _dataGenerator; 
         private CancellationTokenSource _cts;
         private ManualResetEvent _pauseEvent;
         private Boolean _isPaused;
@@ -19,7 +19,7 @@ namespace DataConveyor
 
         public Guid Id { get; }
 
-        protected ProducerConveyorBlock(Func<TOutput> dataGenerator)
+        protected ProducerConveyorBlock(Func<(TOutput Data, Boolean IsStopped)> dataGenerator)
         {
             _dataGenerator = dataGenerator;
             Id = Guid.NewGuid();
@@ -45,8 +45,13 @@ namespace DataConveyor
 
         private void Produce()
         {
-            TOutput data = _dataGenerator.Invoke();
-            _dataSink.Push(data);
+            (TOutput? data, Boolean IsStopped) = _dataGenerator.Invoke();
+
+            if(data != null)
+                _dataSink.Push(data);
+
+            if (IsStopped)
+                _cts.Cancel();
         }
 
         public void Stop()

@@ -45,8 +45,9 @@ namespace DataConveyor
 
         private void Consume()
         {
-            TInput inputData = _dataSource.Pull();
-            _dataConsumer.Invoke(inputData);
+            TInput? inputData = _dataSource.Pull();
+            if(inputData != null)
+                _dataConsumer.Invoke(inputData);
         }
 
         public void Stop()
@@ -62,7 +63,7 @@ namespace DataConveyor
 
         public void Dispose()
         {
-            _dataSource.Dispose();
+            _dataSource?.Dispose();
             _cts.Dispose();
             _pauseEvent.Dispose();
         }

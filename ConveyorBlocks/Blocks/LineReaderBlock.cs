@@ -10,10 +10,10 @@ namespace ConveyorBlocks
         public static LineReaderBlock Create(string filePath) 
         {
             StreamReader stream = new StreamReader(File.OpenRead(filePath));
-            return new LineReaderBlock(stream, () => stream.ReadLine());
+            return new LineReaderBlock(stream, () => (stream.ReadLine(), stream.EndOfStream));
         }
 
-        private LineReaderBlock(StreamReader stream, Func<string> func) : base(func)
+        private LineReaderBlock(StreamReader stream, Func<(string, bool)> func) : base(func)
         {
             _stream = stream;
         }

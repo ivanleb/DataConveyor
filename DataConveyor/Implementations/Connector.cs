@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Threading;
-
+#nullable enable
 namespace DataConveyor
 {
     public class Connector<T> : IConnector<T>
@@ -17,20 +17,20 @@ namespace DataConveyor
 
         public Int32 Length => _cache.Count;
 
-        public Connector(int maxCacheElements) 
-            :this()
+        public Connector(int maxCacheElements)
+            : this()
         {
             _maxCacheElements = maxCacheElements;
         }
 
-        public Connector() 
+        public Connector()
         {
             _cache = new ConcurrentQueue<T>();
             _inputPulse = new ManualResetEventSlim(true);
             _outputPulse = new ManualResetEventSlim(true);
         }
 
-        public T Pull()
+        public T? Pull()
         {
             _outputPulse.Wait();
 
@@ -47,7 +47,7 @@ namespace DataConveyor
             return default(T);
         }
 
-        public void Push(T item)
+        public void Push(T? item)
         {
             _inputPulse.Wait();
 
@@ -78,4 +78,5 @@ namespace DataConveyor
             _isDisposed = true;
         }
     }
+#nullable restore
 }

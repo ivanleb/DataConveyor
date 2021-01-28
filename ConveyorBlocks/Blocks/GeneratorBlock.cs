@@ -8,15 +8,15 @@ namespace ConveyorBlocks
         private static Int32 counter;
         public static GeneratorBlock Create() 
         {
-            Func<string> dataGenerator = () => 
+            Func<(string, bool)> dataGenerator = () => 
             {
-                return counter++.ToString();
+                return (counter++.ToString(), counter > 100000);
             };
 
             return new GeneratorBlock(dataGenerator);
         }
 
-        private GeneratorBlock(Func<string> dataGenerator) : base(dataGenerator)
+        private GeneratorBlock(Func<(string, bool)> dataGenerator) : base(dataGenerator)
         {
         }
     }

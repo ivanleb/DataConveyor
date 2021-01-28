@@ -53,8 +53,16 @@ namespace DataConveyor
 
         private void DoConveyorStep()
         {
-            TInput inputData = _dataSource.Pull();
-            TOutput outputData = _dataHandler.Invoke(inputData);
+            TInput? inputData = _dataSource.Pull();
+
+            if (inputData == null)
+                return;
+
+            TOutput? outputData = _dataHandler.Invoke(inputData);
+
+            if (outputData == null)
+                return;
+
             _dataSink.Push(outputData);
         }
 
