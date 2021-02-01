@@ -9,20 +9,20 @@ namespace ConveyorSample
     {
         static void Main(string[] args)
         {
-            ConnectionSpec spec = new ConnectionSpec(10);
+            ConnectionSpec spec = new ConnectionSpec(100);
 
 
-            var chain1 = LineReaderBlock.Create(@"C:\Users\il\Desktop\vim\VimService.cs")
-            .CreateConveyor(spec)
-            //.Connect(StringReverserBlock.Create(), spec)
-            //.Connect(StringReverserBlock.Create(), spec)
-            .Connect(StringReverserBlock.Create(), spec);
+            var source = LineReaderBlock.Create(@"C:\Users\il\Desktop\vim\VimService1.cs")
+                        .CreateConveyor(spec);
 
-            //var chain3 = chain1.Connect(WriterBlock.Create(), spec);
+            var sink = LineWriterBlock.Create(@"C:\Users\il\Desktop\vim\VimService1_reversed.cs");
 
-            var chain3 = chain1.Connect(LineWriterBlock.Create(@"C:\Users\il\Desktop\vim\VimService_reversed.cs"), spec);
+            var branch1 = source.Connect(StringReverserBlock.Create(), spec).Connect(sink, spec);
+            var branch2 = source.Connect(StringReverserBlock.Create(), spec).Connect(sink, spec);
+            var branch3 = source.Connect(StringReverserBlock.Create(), spec).Connect(sink, spec);
+            var branch4 = source.Connect(StringReverserBlock.Create(), spec).Connect(sink, spec);
 
-            Conveyor conveyor = chain3.Run();
+            Conveyor conveyor = branch4.Run();
 
 
             new Thread(()=> 

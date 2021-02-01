@@ -7,8 +7,7 @@ namespace DataConveyor
     {
         private readonly Func<TInput, TOutput> _dataHandler;
         private CancellationTokenSource _cts;
-        private ManualResetEvent _pauseEvent;
-        private Boolean _isPaused;
+        private ManualResetEventSlim _pauseEvent;
 
         private IConnector<TInput> _dataSource;
         private IConnector<TOutput> _dataSink;
@@ -32,21 +31,20 @@ namespace DataConveyor
             _dataHandler = dataHandler;
             Id = Guid.NewGuid();
             _cts = new CancellationTokenSource();
-            _pauseEvent = new ManualResetEvent(true);
+            _pauseEvent = new ManualResetEventSlim(true);
         }
 
         public void Run(Object state)
         {
-            if (_isPaused)
+            if (!_pauseEvent.IsSet)
             {
                 _pauseEvent.Set();
-                _isPaused = false;
                 return;
             }
 
             while (!_cts.Token.IsCancellationRequested)
             {
-                _pauseEvent.WaitOne();
+                _pauseEvent.Wait();
                 DoConveyorStep();
             }
         }
@@ -74,13 +72,10 @@ namespace DataConveyor
         public void Pause()
         {
             _pauseEvent.Reset();
-            _isPaused = true;
         }
 
         public void Dispose()
         {
-            _dataSource.Dispose();
-            _dataSink.Dispose();
             _cts.Dispose();
             _pauseEvent.Dispose();
         }

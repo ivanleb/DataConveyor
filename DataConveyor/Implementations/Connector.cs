@@ -1,81 +1,55 @@
 ﻿using System;
-using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading;
 #nullable enable
 namespace DataConveyor
 {
     public class Connector<T> : IConnector<T>
     {
-        private readonly ConcurrentQueue<T> _cache;
-        private readonly Int32 _maxCacheElements = 1;
+        private readonly Queue<T?> _queue = new Queue<T?>();
+        private readonly Object _locker = new Object();
 
-        private Boolean _isDisposed;
-        private ManualResetEventSlim _inputPulse;
-        private ManualResetEventSlim _outputPulse;
+        private Int32 _bufferMaxSize;
 
-        public Int32 Capacity => _maxCacheElements;
+        public Int32 Capacity => _bufferMaxSize;
 
-        public Int32 Length => _cache.Count;
+        public Int32 Size => _queue.Count;
 
-        public Connector(int maxCacheElements)
-            : this()
+        public Guid Id { get; } = Guid.NewGuid();
+
+        public Connector(int bufferSize)
         {
-            _maxCacheElements = maxCacheElements;
-        }
-
-        public Connector()
-        {
-            _cache = new ConcurrentQueue<T>();
-            _inputPulse = new ManualResetEventSlim(true);
-            _outputPulse = new ManualResetEventSlim(true);
-        }
-
-        public T? Pull()
-        {
-            _outputPulse.Wait();
-
-            T item;
-            if (_cache.TryDequeue(out item))
-            {
-                if (_cache.IsEmpty)
-                    CloseOutputOpenInput();
-
-                return item;
-            }
-
-            CloseOutputOpenInput();
-            return default(T);
+            _bufferMaxSize = bufferSize;
         }
 
         public void Push(T? item)
         {
-            _inputPulse.Wait();
-
-            _cache.Enqueue(item);
-
-            _outputPulse.Set();
-
-            if (_cache.Count > _maxCacheElements)
+            lock (_locker)
             {
-                _inputPulse.Reset();
+                while (_queue.Count >= _bufferMaxSize)
+                    Monitor.Wait(_locker);
+
+                _queue.Enqueue(item);
+
+                if (_queue.Count == 1)
+                    Monitor.PulseAll(_locker);
             }
         }
 
-        private void CloseOutputOpenInput()
+        public T? Pull()
         {
-            _outputPulse.Reset();
-            _inputPulse.Set();
-        }
-
-        public void Dispose()
-        {
-            if (!_isDisposed)
+            lock (_locker)
             {
-                _inputPulse.Dispose();
-                _outputPulse.Dispose();
-            }
+                while (_queue.Count == 0)
+                    Monitor.Wait(_locker);
 
-            _isDisposed = true;
+                T? item = _queue.Dequeue();
+
+                if (_queue.Count == _bufferMaxSize - 1)
+                    Monitor.PulseAll(_locker);
+
+                return item;
+            }
         }
     }
 #nullable restore
