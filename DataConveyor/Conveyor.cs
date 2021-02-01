@@ -5,10 +5,19 @@ using System.Threading;
 
 namespace DataConveyor
 {
+    public enum ConveyorState 
+    {
+        NotStarted = 0,
+        Running = 10,
+        Paused = 20,
+        Resumed = 30,
+        Stopped = 40
+    }
+
     public class Conveyor : IDisposable
     {
         private Dictionary<Guid, IBlock> _blocks;
-        private Boolean _isPaused;
+        public ConveyorState ConveyorState { get; private set; } = 0;
 
         public Conveyor(params IBlock[] blocks)
         {
@@ -27,19 +36,32 @@ namespace DataConveyor
             {
                 ThreadPool.QueueUserWorkItem(block.Run);
             }
+            ConveyorState = ConveyorState.Running;
         }
 
-        public void PauseResume() 
+        public ConveyorState PauseResume()
         {
-            if (_isPaused)
+            switch (ConveyorState)
             {
-                Resume();
-                _isPaused = false;
-            }
-            else
-            {
-                Pause();
-                _isPaused = true;
+                case ConveyorState.Running:
+                case ConveyorState.Resumed:
+                    {
+                        Pause();
+                        ConveyorState = ConveyorState.Paused;
+                        return ConveyorState;
+                    }
+
+                case ConveyorState.Paused:
+                    {
+                        Resume();
+                        ConveyorState = ConveyorState.Resumed;
+                        return ConveyorState;
+                    }
+
+                case ConveyorState.NotStarted:
+                case ConveyorState.Stopped:                    
+                default:
+                    return ConveyorState;
             }
         }
 
@@ -65,6 +87,7 @@ namespace DataConveyor
             {
                 block.Stop();
             }
+            ConveyorState = ConveyorState.Stopped;
         }
 
         public void Dispose()
