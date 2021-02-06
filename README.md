@@ -19,3 +19,27 @@ Produce block has to have at least one block after.
 Consume block has to have at least one block before.
 
 Connector between blocks can have buffer, by default connector is create without buffer.
+
+## Sample of reading text file line by line, reversing each line and writing reversed lines in text file
+
+
+```c#
+            //create specification for connectors, '100' - is buffer size
+            ConnectionSpec spec = new ConnectionSpec(100);
+      
+            //create source of data - block that read file with 'sourcePath' line by line
+            var source = LineReaderBlock.Create(sourcePath)
+                        .CreateConveyor(spec);
+            
+            //create target of data - block that write lines into file with 'targetPath' line by line
+            var sink = LineWriterBlock.Create(targetPath);
+            
+            //create 4 handle-blocks, that reverse lines and connect all that blocks to reader block and to writer block
+            var branch1 = source.Connect(StringReverserBlock.Create(), spec).Connect(sink, spec);
+            var branch2 = source.Connect(StringReverserBlock.Create(), spec).Connect(sink, spec);
+            var branch3 = source.Connect(StringReverserBlock.Create(), spec).Connect(sink, spec);
+            var branch4 = source.Connect(StringReverserBlock.Create(), spec).Connect(sink, spec);
+            
+            //start conveyor
+            Conveyor conveyor = branch4.Run();
+```
