@@ -1,7 +1,7 @@
 ﻿using DataConveyor;
 using System;
 
-namespace ConveyorBlocks
+namespace DataConveyor.Blocks
 {
     public class GeneratorBlock : ProducerConveyorBlock<String>
     {

@@ -2,7 +2,7 @@
 using System;
 using System.IO;
 
-namespace ConveyorBlocks
+namespace DataConveyor.Blocks
 {
     public class LineReaderBlock : ProducerConveyorBlock<String>
     {

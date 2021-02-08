@@ -2,7 +2,22 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <Nullable>enable</Nullable> 
+    <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/ivanleb/DataConveyor</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/ivanleb/DataConveyor</PackageProjectUrl>
+    <PackageIcon>noun_conveyor belt_262119.png</PackageIcon>
+    <Version>0.0.1</Version>
+    <Authors>ivan_leb</Authors>
+    <Description>Library for data processing</Description> 
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\noun_conveyor belt_262119.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
 
 </Project>

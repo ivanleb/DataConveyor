@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataConveyor", "DataConveyo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConveyorSample", "ConveyorSample\ConveyorSample.csproj", "{D70E2268-1A18-4BAD-8904-A1C383DEE19C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConveyorBlocks", "ConveyorBlocks\ConveyorBlocks.csproj", "{804DABBA-8DC3-4BFB-8EA9-2EC5C6E669B3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataConveyor.Blocks", "ConveyorBlocks\DataConveyor.Blocks.csproj", "{804DABBA-8DC3-4BFB-8EA9-2EC5C6E669B3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

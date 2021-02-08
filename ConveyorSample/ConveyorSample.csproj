@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ConveyorBlocks\ConveyorBlocks.csproj" />
+    <ProjectReference Include="..\ConveyorBlocks\DataConveyor.Blocks.csproj" />
     <ProjectReference Include="..\DataConveyor\DataConveyor.csproj" />
   </ItemGroup>
 

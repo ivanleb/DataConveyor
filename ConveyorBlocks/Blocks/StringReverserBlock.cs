@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 using System.Threading;
 
-namespace ConveyorBlocks
+namespace DataConveyor.Blocks
 {
     public class StringReverserBlock : ConveyorBlock<String, String>
     {

@@ -22,7 +22,7 @@ namespace DataConveyor
             if (inputBlock.Connector != null && outputBlock.Connector == null)
             {
                 outputBlock.Connector = inputBlock.Connector;
-                return true; ;
+                return true;
             }
             return (inputBlock.Connector == outputBlock.Connector);
         }
