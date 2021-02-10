@@ -1,0 +1,38 @@
+﻿<UserControl x:Class="DataConveyor.Views.WPF.Views.ProcessingBlockView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DataConveyor.Views.WPF.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="100" d:DesignWidth="100">
+    <StackPanel Orientation="Horizontal">
+        <Grid Width="10"
+              Background="White"/>
+        <Grid Background="LightGray">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="20"/>
+            </Grid.RowDefinitions>
+            <Border BorderThickness="1"
+                    BorderBrush="Black">
+                <TextBlock Text="{Binding Path=Name, Mode=TwoWay, NotifyOnSourceUpdated=True}"
+                       Height="20"
+                       Grid.Row="0"/>
+            </Border>
+            <Button Content="Run" Command="{Binding Path=RunCommand}" 
+                Height="20"
+                Grid.Row="1"/>
+            <Button Content="Pause/Resume" Command="{Binding Path=PauseResumeCommand}" 
+                Height="20"
+                Grid.Row="2"/>
+            <Button Content="Stop" Command="{Binding Path=StopCommand}" 
+                Height="20"
+                Grid.Row="3"/>
+        </Grid>
+        <Grid Width="10"
+              Background="White"/>
+    </StackPanel>
+</UserControl>

@@ -9,6 +9,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConveyorSample", "ConveyorS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataConveyor.Blocks", "ConveyorBlocks\DataConveyor.Blocks.csproj", "{804DABBA-8DC3-4BFB-8EA9-2EC5C6E669B3}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataConveyor.Views.WPF", "DataConveyor.Views.WPF\DataConveyor.Views.WPF.csproj", "{CF357305-3C88-4E24-8C9C-AD23563B403F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataConveyor.WPF.Sample", "DataConveyor.WPF.Sample\DataConveyor.WPF.Sample.csproj", "{7C0A20B2-6539-4856-AF81-EE718A4B0972}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{804DABBA-8DC3-4BFB-8EA9-2EC5C6E669B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{804DABBA-8DC3-4BFB-8EA9-2EC5C6E669B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{804DABBA-8DC3-4BFB-8EA9-2EC5C6E669B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF357305-3C88-4E24-8C9C-AD23563B403F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF357305-3C88-4E24-8C9C-AD23563B403F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF357305-3C88-4E24-8C9C-AD23563B403F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF357305-3C88-4E24-8C9C-AD23563B403F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C0A20B2-6539-4856-AF81-EE718A4B0972}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C0A20B2-6539-4856-AF81-EE718A4B0972}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C0A20B2-6539-4856-AF81-EE718A4B0972}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C0A20B2-6539-4856-AF81-EE718A4B0972}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
